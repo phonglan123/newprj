@@ -1,0 +1,54 @@
+<h2 style="text-align: center">Tỉ lệ chiếm sàn mỗi lần phát hành cổ phiếu loại P (just for fun ^^)</h2>
+<div id="main" style="border: 1px solid black;"></div>
+<script>
+    function randomIntFromInterval(min, max) {
+        return Math.floor(Math.random() * (max - min + 1) + min)
+    }
+
+
+    function addNewCompany() {
+        companies[companies.length] = randomIntFromInterval(16, (companies.reduce((a, b) => a + b, 0)) / 8);
+        document.getElementById('main').innerHTML += '<div id="' + (companies.length - 1) + '"></div>';
+        nameCom[companies.length - 1] = nameList[randomIntFromInterval(0, nameList.length - 1)];
+    }
+
+    function updateValue() {
+        rate = []
+        companies.forEach((company, index) => companies[index] = companies[index] + randomIntFromInterval(1, 4444));
+        nameCom.forEach((company, index) => {
+            var newRate = (companies[index]) / (companies.reduce((a, b) => a + b, 0)) * 100;
+            rate.push((company == undefined) ? 0 : newRate);
+        });
+        rate.forEach((companyRate, index) => {
+            if (companyRate < 2) {
+                document.getElementById(index).style.display = 'none';
+                document.getElementById(index).innerHTML = '';
+                nameCom[index] = undefined;
+                rate[index] = 0;
+                companies[index] = 0;
+            } else if (nameCom[index] != undefined) {
+                var color = (companyRate > 16) ? ((companyRate > 64) ? ((companyRate >= 99) ? 'yellow' : 'green') : 'red') : 'black';
+                document.getElementById(index).style = 'padding: 4px; width: calc(' + Math.round(companyRate) + '% - 16px); background: ' + color + '; color: white; margin: 4px; transition: all 1s; -moz-transition: all 1s; -webkit-transition: all 1s; -o-transition: all 1s; height: 50px; display: inline-flex; flex-wrap: nowrap;';
+                document.getElementById(index).innerHTML = nameCom[index] + ' (' + (index + 1) + ') : ' + Math.round(companyRate) + '%';
+            }
+        })
+    }
+
+    var companies = [],
+        rate = [],
+        nameCom = [],
+        nameList = ['Google', 'Apple', 'Facebook', 'Amazon', 'Microsoft', 'Tesla', 'Peta', 'FPT', 'Vingroup', 'Viettel', 'Verizon', 'Yahoo', 'Honda', 'BMW', 'Prosoft', 'SEA Group'],
+        companyAmount = randomIntFromInterval(4, nameList.length);
+
+    for (var i = 0; i < companyAmount; i++)
+        addNewCompany();
+    setInterval(updateValue, 400);
+    setInterval(() => {
+        var randomElm = randomIntFromInterval(0, companies.length - 1);
+        while (companies[randomElm] == 0)
+            randomElm = randomIntFromInterval(0, companies.length - 1);
+        companies[randomElm] *= 4
+        addNewCompany();
+    }, 1600);
+
+</script>
